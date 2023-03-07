@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using dotnet_rpg.Models;
+using dotnet_rpg.Services.CharacterService;
 using Microsoft.AspNetCore.Mvc;
 
 namespace dotnet_rpg.Controllers
@@ -11,11 +10,29 @@ namespace dotnet_rpg.Controllers
     [Route("api/[controller]")] //Configuramos o "link" para api/Nome da class
     public class CharacterController : ControllerBase
     {
-        private static Character knight = new Character();
+      
+        private readonly ICharacterService _characterService;
+        public CharacterController(ICharacterService characterService)
+        {
+            _characterService = characterService;
+        }
 
-        [HttpGet] //Já aparece no Swagger
-        public ActionResult<Character> Get() { //Se o método começa com Get o API assume se trata de Get automaticamente
-            return Ok(knight); //Retorna o status 200 de ok junto com o resultado
+        [HttpGet("GetAll")] //Já aparece no Swagger
+        public ActionResult<List<Character>> Get() { //Se o método começa com Get o API assume se trata de Get automaticamente
+            List<Character> characters = _characterService.GetAllCharacters();
+            return Ok(characters); //Retorna o status 200 de ok junto com o resultado
+        }
+
+        [HttpGet("GetSingle/{id}")]
+        public ActionResult<Character> GetSingle(int id)
+        {
+            return Ok(_characterService.GetCharacterById(id));
+        }
+
+        [HttpPost]
+        public ActionResult<List<Character>> AddCharacter(Character newCharacter)
+        {  
+            return Ok(_characterService.AddCharacter(newCharacter));
         }
     }
 }

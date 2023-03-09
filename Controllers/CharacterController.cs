@@ -18,21 +18,21 @@ namespace dotnet_rpg.Controllers
         }
 
         [HttpGet("GetAll")] //Já aparece no Swagger
-        public ActionResult<List<Character>> Get() { //Se o método começa com Get o API assume se trata de Get automaticamente
-            List<Character> characters = _characterService.GetAllCharacters();
-            return Ok(characters); //Retorna o status 200 de ok junto com o resultado
+        public async Task<ActionResult<ServiceResponse<List<Character>>>> Get() { //Se o método começa com Get o API assume se trata de Get automaticamente
+  
+            return Ok(await _characterService.GetAllCharacters()); //Retorna o status 200 de ok junto com o resultado
         }
 
         [HttpGet("GetSingle/{id}")]
-        public ActionResult<Character> GetSingle(int id)
+        public async Task<ActionResult<ServiceResponse<Character>>> GetSingle(int id)
         {
-            return Ok(_characterService.GetCharacterById(id));
+            return Ok(await _characterService.GetCharacterById(id));
         }
 
         [HttpPost]
-        public ActionResult<List<Character>> AddCharacter(Character newCharacter)
-        {  
-            return Ok(_characterService.AddCharacter(newCharacter));
+        public async Task<ActionResult<ServiceResponse<List<Character>>>> AddCharacter(Character newCharacter) //Métodos assíncronos permitem que as threads sejam liberadas e não fiquem bloquedas, caso necessitem de uma condição para prosseguir
+        {  //Por exemplo, em métodos síncronos, uma chamada de consulta no banco de dados poderia bloquear a thread e impedir novas requisições, atrapalhando a experiência do usuário
+            return Ok(await _characterService.AddCharacter(newCharacter));
         }
     }
 }

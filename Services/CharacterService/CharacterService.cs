@@ -12,25 +12,26 @@ namespace dotnet_rpg.Services.CharacterService
             }
         };
 
-        public List<Character> AddCharacter(Character newCharacter)
+        public async Task<ServiceResponse<List<Character>>> AddCharacter(Character newCharacter)
         {
+            var serviceResponse = new ServiceResponse<List<Character>>();
             characters.Add(newCharacter);
-            return characters;
+            serviceResponse.Data = characters;
+            return serviceResponse;
         }
 
-        public List<Character> GetAllCharacters()
+        public async Task<ServiceResponse<List<Character>>> GetAllCharacters()
         {
-            return characters;
+            var serviceResponse = new ServiceResponse<List<Character>>();
+            serviceResponse.Data = characters;
+            return serviceResponse;
         }
 
-        public Character GetCharacterById(int id)
+        public async Task<ServiceResponse<Character>> GetCharacterById(int id)
         {
-            var character = characters.FirstOrDefault(c => c.Id == id);
-
-            if(character is not null) {
-                return character;
-            } 
-            throw new Exception("Character not found");
+            var serviceResponse = new ServiceResponse<Character>();
+            serviceResponse.Data = characters.FirstOrDefault(c => c.Id == id);
+            return serviceResponse;
         }
     }
 
